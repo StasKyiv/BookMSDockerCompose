@@ -1,0 +1,34 @@
+﻿version: '3.8'
+
+services:
+  blazor-client:
+    image: staskyiv/bookmsclient:latest
+    build:
+      #context: ./Client/BookCatalogManagementSystem.Client
+      context: ..
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - web-api
+    environment:
+      - BACKEND_URL=http://backend:8081
+    networks:
+      - blazor-network
+
+  web-api:
+    image: staskyiv/bookmswebapi:latest
+    build:
+      #context: ./WebApi # Path to your Web API project
+      context: .
+      dockerfile: Dockerfile # Path to the Dockerfile for Web API
+    ports:
+      - "8081:8081"
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:8081
+    networks:
+      - blazor-network
+
+networks:
+  blazor-network:
+    driver: bridge
